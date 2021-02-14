@@ -1,0 +1,4 @@
+viewname:
+  chatroom:
+    list: /chat2/rooms
+    detail: /chat2/room-detail
