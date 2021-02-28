@@ -10,12 +10,15 @@ class User(
     val id: Long? = null,
 
     @Column(nullable = false)
-    val name: String,
+    var name: String,
 
     @Column(nullable = false)
     val email: String,
 
+    @Column(nullable = false)
+    var picture: String,
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     val role: Role
-): BaseTimeEntity()
+) : BaseTimeEntity()
