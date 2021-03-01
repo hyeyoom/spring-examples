@@ -1,7 +1,11 @@
 package com.github.hyeyoom.webfluxexample
 
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
+
+@SpringBootApplication
 class WebfluxExampleApplication
 
 fun main(args: Array<String>) {
-    println("hiyo")
+    runApplication<WebfluxExampleApplication>(*args)
 }
