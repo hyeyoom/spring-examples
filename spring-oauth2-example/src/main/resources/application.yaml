@@ -1,0 +1,13 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${clientId}
+            client-secret: ${clientSecret}
+            scope: profile,email
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
