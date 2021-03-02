@@ -3,6 +3,7 @@ package com.github.hyeyoom.webfluxexample.fluxandmonoplayground
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
 @DisplayName("flux와 mono 테스트")
@@ -75,5 +76,26 @@ class FlexAndMonoTest {
             /*.expectError(RuntimeException::class.java)*/
             .expectErrorMessage("Exception Occurred?")
             .verify()
+    }
+
+    @DisplayName("모노 테스트")
+    @Test
+    fun testMono() {
+        val mono = Mono.just("Spring").log()
+
+        StepVerifier.create(mono)
+                .expectNext("Spring")
+                .verifyComplete()
+    }
+
+    @DisplayName("모노 테스트 에러 발생")
+    @Test
+    fun testMonoWithError() {
+        val mono = Mono.just("Spring")
+                .concatWith(Mono.error(RuntimeException()))
+                .log()
+
+        StepVerifier.create(mono)
+                .expectError(RuntimeException::class.java)
     }
 }
