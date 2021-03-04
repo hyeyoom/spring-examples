@@ -35,7 +35,7 @@ internal class FluxAndMonoTransformTest {
             .expectNext(4, 4, 4, 5)
             .verifyComplete()
     }
-    
+
     @DisplayName("필터 + 변환")
     @Test
     fun testCombination() {
@@ -73,14 +73,19 @@ internal class FluxAndMonoTransformTest {
     @DisplayName("flatmap - faster")
     @Test
     fun testFlatmapFasterVersion() {
+        val t1 = System.currentTimeMillis()
         val flux = Flux.fromIterable(mutableListOf("A", "B", "C", "D", "E", "F"))
             .window(1)
-            .flatMap { it.map(this::convertToList).subscribeOn(parallel())
-                .flatMap { it -> Flux.fromIterable(it) }}
+            .flatMap {
+                it.map(this::convertToList).subscribeOn(parallel())
+                    .flatMap { a -> Flux.fromIterable(a) }
+            }
             .log()
 
         StepVerifier.create(flux)
             .expectNextCount(12)
             .verifyComplete()
+        val t2 = System.currentTimeMillis()
+        println(t2 - t1)
     }
 }
