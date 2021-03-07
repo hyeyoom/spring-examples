@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
 @DisplayName("flux와 mono 테스트")
-internal class FlexAndMonoTest {
+internal class FluxAndMonoTest {
 
     @DisplayName("flux test")
     @Test
