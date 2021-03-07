@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
+import reactor.test.scheduler.VirtualTimeScheduler
 import java.time.Duration
 
 @DisplayName("플럭스 모노 결합")
@@ -28,16 +29,24 @@ internal class FluxAndMonoCombineTest {
     @Test
     fun testDelay() {
 
+        VirtualTimeScheduler.getOrSet()
+
         val flux1 = Flux.just("A", "B", "C").delayElements(Duration.ofSeconds(1))
         val flux2 = Flux.just("D", "E", "F").delayElements(Duration.ofSeconds(1))
 
         val merged = Flux.merge(flux1, flux2)
 
-        StepVerifier.create(merged.log())
+        StepVerifier.withVirtualTime { merged }
+            .expectSubscription()
+            .thenAwait(Duration.ofSeconds(6))
+            .expectNextCount(6)
+            .verifyComplete()
+
+        /*StepVerifier.create(merged.log())
             .expectSubscription()
             .expectNextCount(6)
             //.expectNext("A", "B", "C", "D", "E", "F")
-            .verifyComplete()
+            .verifyComplete()*/
     }
 
     @DisplayName("concat")
@@ -59,15 +68,23 @@ internal class FluxAndMonoCombineTest {
     @Test
     fun testConcatWithDelay() {
 
+        VirtualTimeScheduler.getOrSet()
+
         val flux1 = Flux.just("A", "B", "C").delayElements(Duration.ofSeconds(1))
         val flux2 = Flux.just("D", "E", "F").delayElements(Duration.ofSeconds(1))
 
-        val concat = Flux.concat(flux1, flux2)
+        val concat = Flux.concat(flux1, flux2).log()
 
-        StepVerifier.create(concat.log())
+        StepVerifier.withVirtualTime { concat }
             .expectSubscription()
+            .thenAwait(Duration.ofSeconds(6))
             .expectNext("A", "B", "C", "D", "E", "F")
             .verifyComplete()
+
+        /*StepVerifier.create(concat.log())
+            .expectSubscription()
+            .expectNext("A", "B", "C", "D", "E", "F")
+            .verifyComplete()*/
     }
 
     @DisplayName("zip")
